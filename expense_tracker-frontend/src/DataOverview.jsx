@@ -1,31 +1,43 @@
-// DataOverview.jsx
-import React, { useState, useEffect } from 'react';
+// DataOverview.js
+import React, { useState, useEffect, useContext } from 'react';
 import DataTable from './DataTable.jsx';
 import axios from 'axios';
+import { useNavigate } from "react-router-dom";
+import { handleAxiosError } from "./errorHandler.jsx";
+import { AuthContext } from './AuthContext';
 
 const DataOverview = () => {
     const [data, setData] = useState({});
     const [period, setPeriod] = useState('daily');
     const [category, setCategory] = useState('');
+    const { token, handleLogout } = useContext(AuthContext);
+
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchExpenses = async () => {
             try {
                 const response = await axios.get('http://localhost:5000/get-expenses', {
                     params: { period, category },
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
                 });
                 setData(response.data);
             } catch (error) {
-                console.error('Error fetching expenses:', error);
+                handleAxiosError(error, handleLogout);
             }
         };
 
         fetchExpenses();
-    }, [period, category]);
+    }, [period, category, token, handleLogout]);
 
     return (
         <div>
-            <h1>Expense Report</h1>
+            <div className="heading">
+                <button onClick={() => navigate('/')}>Back</button>
+                <h2>Expense Overview</h2>
+            </div>
             <div>
                 <label>
                     Period:

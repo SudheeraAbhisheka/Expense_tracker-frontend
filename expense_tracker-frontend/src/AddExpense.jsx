@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import {handleAxiosError} from "./errorHandler.jsx";
 
-const AddExpense = () => {
+const AddExpense = ({ token, handleLogout }) => {
     const [category, setCategory] = useState('');
     const [amount, setAmount] = useState('');
     const [date, setDate] = useState('');
@@ -23,12 +24,14 @@ const AddExpense = () => {
         };
 
         try {
-            // Send a POST request to the Flask backend
-            const response = await axios.post('http://localhost:5000/add-expense', expenseData);
+            const response = await axios.post('http://localhost:5000/add-expense', expenseData, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
             alert(response.data.message);
         } catch (error) {
-            console.error('There was an error adding the expense:', error);
-            alert('Failed to add the expense');
+            handleAxiosError(error, handleLogout);
         }
     };
 
