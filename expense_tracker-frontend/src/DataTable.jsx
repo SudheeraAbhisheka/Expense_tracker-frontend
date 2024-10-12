@@ -3,9 +3,17 @@ import PropTypes from 'prop-types';
 import './DataTable.css';
 
 const DataTable = ({ data }) => {
-    const categories = ['Food', 'Travel', 'Entertainment', 'Health', 'Other'];
     const [sortColumn, setSortColumn] = useState('date');
     const [sortOrder, setSortOrder] = useState('desc');
+
+    // Collect all categories from data
+    const categoriesSet = new Set();
+    Object.values(data).forEach(({ category_map }) => {
+        Object.keys(category_map).forEach((category) => {
+            categoriesSet.add(category);
+        });
+    });
+    const categories = Array.from(categoriesSet);
 
     const handleSort = (column) => {
         if (sortColumn === column) {

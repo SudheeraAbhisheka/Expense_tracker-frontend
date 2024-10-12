@@ -1,13 +1,15 @@
-import React, { useState } from 'react';
+import React, {useContext, useState} from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import {handleAxiosError} from "./errorHandler.jsx";
+import {AuthContext} from "./AuthContext.jsx";
 
-const AddExpense = ({ token, handleLogout }) => {
+const AddExpense = () => {
     const [category, setCategory] = useState('');
     const [amount, setAmount] = useState('');
     const [date, setDate] = useState('');
     const [description, setDescription] = useState('');
+    const { token, handleLogout } = useContext(AuthContext);
 
     // Use the useNavigate hook
     const navigate = useNavigate();
